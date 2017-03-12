@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import DKImagePickerController
+@testable import DKImagePickerControllerDemo
 
 class DKImagePickerControllerDemoTests: XCTestCase {
     
@@ -31,6 +31,18 @@ class DKImagePickerControllerDemoTests: XCTestCase {
         self.measure {
             // Put the code you want to measure the time of here.
         }
+    }
+    
+    func testBundleSourceRoot() {
+        let path = DKPathAssetGroup.Source.bundle.path(with: "DKCameraResource")!
+        XCTAssert((path as NSString).lastPathComponent == "DKCameraResource.bundle", "\((path as NSString).lastPathComponent)")
+        XCTAssert(FileManager.default.fileExists(atPath: path), "\(path)")
+    }
+    
+    func testBundleSourceSubpath() {
+        let path = DKPathAssetGroup.Source.bundle.path(with: "DKCameraResource/Images")!
+        XCTAssert((path as NSString).lastPathComponent == "Images", "\((path as NSString).lastPathComponent)")
+        XCTAssert(FileManager.default.fileExists(atPath: path), "\(path)")
     }
     
 }

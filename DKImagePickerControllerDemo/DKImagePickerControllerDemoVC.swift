@@ -20,7 +20,11 @@ class DKImagePickerControllerDemoVC: UITableViewController {
             
         case "Pick All":
             let pickerController = DKImagePickerController()
-            
+            // assetFetchOptions.predicate = "mediaType == PHAssetMediaType.video"
+            var extraGroups: [DKAssetGroup] = []
+            extraGroups.append(DKPathAssetGroup(source: .bundle, subpath: "DKCameraResource/Images", name: "Camera Resource"))
+            pickerController.extraGroups = extraGroups
+                        
             destination.pickerController = pickerController
             
         case "Pick Photos Only":
