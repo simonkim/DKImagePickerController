@@ -79,33 +79,24 @@ public class DKImageManager: DKBaseManager {
 	}()
 	
 	public var autoDownloadWhenAssetIsInCloud = true
-	
-    public lazy var groupDataManager: DKGroupDataManager! = {
-        return DKGroupDataManager()
-    }()
-	
-	public func invalidate() {
-		self.groupDataManager.invalidate()
-        self.groupDataManager = nil
-	}
-	
-	public func fetchImageForAsset(_ asset: DKAsset, size: CGSize, completeBlock: @escaping (_ image: UIImage?, _ info: [AnyHashable: Any]?) -> Void) {
+		
+	public func fetchImageForAsset(_ asset: PHAsset, size: CGSize, completeBlock: @escaping (_ image: UIImage?, _ info: [AnyHashable: Any]?) -> Void) {
 		self.fetchImageForAsset(asset, size: size, options: nil, completeBlock: completeBlock)
 	}
 	
-	public func fetchImageForAsset(_ asset: DKAsset, size: CGSize, contentMode: PHImageContentMode, completeBlock: @escaping (_ image: UIImage?, _ info: [AnyHashable: Any]?) -> Void) {
+	public func fetchImageForAsset(_ asset: PHAsset, size: CGSize, contentMode: PHImageContentMode, completeBlock: @escaping (_ image: UIImage?, _ info: [AnyHashable: Any]?) -> Void) {
 			self.fetchImageForAsset(asset, size: size, options: nil, contentMode: contentMode, completeBlock: completeBlock)
 	}
 
-	public func fetchImageForAsset(_ asset: DKAsset, size: CGSize, options: PHImageRequestOptions?, completeBlock: @escaping (_ image: UIImage?, _ info: [AnyHashable: Any]?) -> Void) {
+	public func fetchImageForAsset(_ asset: PHAsset, size: CGSize, options: PHImageRequestOptions?, completeBlock: @escaping (_ image: UIImage?, _ info: [AnyHashable: Any]?) -> Void) {
 		self.fetchImageForAsset(asset, size: size, options: options, contentMode: .aspectFill, completeBlock: completeBlock)
 	}
 	
-	public func fetchImageForAsset(_ asset: DKAsset, size: CGSize, options: PHImageRequestOptions?, contentMode: PHImageContentMode,
+	public func fetchImageForAsset(_ asset: PHAsset, size: CGSize, options: PHImageRequestOptions?, contentMode: PHImageContentMode,
 	                               completeBlock: @escaping (_ image: UIImage?, _ info: [AnyHashable: Any]?) -> Void) {
             let options = (options ?? self.defaultImageRequestOptions).copy() as! PHImageRequestOptions
 
-            self.manager.requestImage(for: asset.originalAsset!,
+            self.manager.requestImage(for: asset,
                                       targetSize: size,
                                       contentMode: contentMode,
                                       options: options,
@@ -120,8 +111,8 @@ public class DKImageManager: DKBaseManager {
             })
 	}
 	
-	public func fetchImageDataForAsset(_ asset: DKAsset, options: PHImageRequestOptions?, completeBlock: @escaping (_ data: Data?, _ info: [AnyHashable: Any]?) -> Void) {
-		self.manager.requestImageData(for: asset.originalAsset!,
+	public func fetchImageDataForAsset(_ asset: PHAsset, options: PHImageRequestOptions?, completeBlock: @escaping (_ data: Data?, _ info: [AnyHashable: Any]?) -> Void) {
+		self.manager.requestImageData(for: asset,
 		                                      options: options ?? self.defaultImageRequestOptions) { (data, dataUTI, orientation, info) in
 												if let isInCloud = info?[PHImageResultIsInCloudKey] as AnyObject?
 													, data == nil && isInCloud.boolValue && self.autoDownloadWhenAssetIsInCloud {
@@ -134,12 +125,12 @@ public class DKImageManager: DKBaseManager {
 		}
 	}
 	
-	public func fetchAVAsset(_ asset: DKAsset, completeBlock: @escaping (_ avAsset: AVAsset?, _ info: [AnyHashable: Any]?) -> Void) {
+	public func fetchAVAsset(_ asset: PHAsset, completeBlock: @escaping (_ avAsset: AVAsset?, _ info: [AnyHashable: Any]?) -> Void) {
 		self.fetchAVAsset(asset, options: nil, completeBlock: completeBlock)
 	}
 	
-	public func fetchAVAsset(_ asset: DKAsset, options: PHVideoRequestOptions?, completeBlock: @escaping (_ avAsset: AVAsset?, _ info: [AnyHashable: Any]?) -> Void) {
-		self.manager.requestAVAsset(forVideo: asset.originalAsset!,
+	public func fetchAVAsset(_ asset: PHAsset, options: PHVideoRequestOptions?, completeBlock: @escaping (_ avAsset: AVAsset?, _ info: [AnyHashable: Any]?) -> Void) {
+		self.manager.requestAVAsset(forVideo: asset,
 			options: options ?? self.defaultVideoRequestOptions) { avAsset, audioMix, info in
 				if let isInCloud = info?[PHImageResultIsInCloudKey] as AnyObject?
 					, avAsset == nil && isInCloud.boolValue && self.autoDownloadWhenAssetIsInCloud {

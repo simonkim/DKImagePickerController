@@ -139,35 +139,41 @@ open class DKImagePickerController : UINavigationController {
         .albumRegular
         ] {
         willSet(newTypes) {
-            getImageManager().groupDataManager.assetGroupTypes = newTypes
+            getGroupDataManager().assetGroupTypes = newTypes
         }
     }
+    
+    public var extraGroups: [DKAssetGroup] = [] {
+        willSet(newGroups) {
+            getGroupDataManager().extraGroups = newGroups
+        }
+     }
     
     /// Set the showsEmptyAlbums to specify whether or not the empty albums is shown in the picker.
     public var showsEmptyAlbums = true {
         didSet {
-            getImageManager().groupDataManager.showsEmptyAlbums = self.showsEmptyAlbums
+            getGroupDataManager().showsEmptyAlbums = self.showsEmptyAlbums
         }
     }
     
     /// The type of picker interface to be displayed by the controller.
     public var assetType: DKImagePickerControllerAssetType = .allAssets {
         didSet {
-            getImageManager().groupDataManager.assetFetchOptions = self.createAssetFetchOptions()
+            getGroupDataManager().assetFetchOptions = self.createAssetFetchOptions()
         }
     }
     
     /// The predicate applies to images only.
     public var imageFetchPredicate: NSPredicate? {
         didSet {
-            getImageManager().groupDataManager.assetFetchOptions = self.createAssetFetchOptions()
+            getGroupDataManager().assetFetchOptions = self.createAssetFetchOptions()
         }
     }
     
     /// The predicate applies to videos only.
     public var videoFetchPredicate: NSPredicate? {
         didSet {
-            getImageManager().groupDataManager.assetFetchOptions = self.createAssetFetchOptions()
+            getGroupDataManager().assetFetchOptions = self.createAssetFetchOptions()
         }
     }
     
@@ -229,15 +235,16 @@ open class DKImagePickerController : UINavigationController {
         
         rootVC.navigationItem.hidesBackButton = true
         
-        getImageManager().groupDataManager.assetGroupTypes = self.assetGroupTypes
-        getImageManager().groupDataManager.assetFetchOptions = self.createAssetFetchOptions()
-        getImageManager().groupDataManager.showsEmptyAlbums = self.showsEmptyAlbums
+        getGroupDataManager().assetGroupTypes = self.assetGroupTypes
+        getGroupDataManager().assetFetchOptions = self.createAssetFetchOptions()
+        getGroupDataManager().showsEmptyAlbums = self.showsEmptyAlbums
         getImageManager().autoDownloadWhenAssetIsInCloud = self.autoDownloadWhenAssetIsInCloud
+        getGroupDataManager().extraGroups = self.extraGroups
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
-        getImageManager().invalidate()
+        getGroupDataManager().invalidate()
     }
     
     override open func viewDidLoad() {

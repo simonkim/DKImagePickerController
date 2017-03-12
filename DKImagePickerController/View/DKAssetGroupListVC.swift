@@ -147,11 +147,11 @@ class DKAssetGroupListVC: UITableViewController, DKGroupDataManagerObserver {
         
         self.clearsSelectionOnViewWillAppear = false
 		
-		getImageManager().groupDataManager.addObserver(self)
+		getGroupDataManager().addObserver(self)
 	}
 	
 	internal func loadGroups() {
-		getImageManager().groupDataManager.fetchGroups { [weak self] groups, error in
+		getGroupDataManager().fetchGroups { [weak self] groups, error in
 			guard let strongSelf = self else { return }
 			
 			if error == nil {
@@ -172,8 +172,8 @@ class DKAssetGroupListVC: UITableViewController, DKGroupDataManagerObserver {
 		if let groups = self.groups {
 			if let defaultAssetGroup = self.defaultAssetGroup {
 				for groupId in groups {
-					let group = getImageManager().groupDataManager.fetchGroupWithGroupId(groupId)
-					if defaultAssetGroup == group.originalCollection.assetCollectionSubtype {
+					let group = getGroupDataManager().fetchGroupWithGroupId(groupId)
+					if defaultAssetGroup == group.collectionType as? PHAssetCollectionSubtype {
 						return groupId
 					}
 				}
@@ -192,7 +192,7 @@ class DKAssetGroupListVC: UITableViewController, DKGroupDataManagerObserver {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: DKImageGroupCellIdentifier, for: indexPath) as! DKAssetGroupCell
 		
-        let assetGroup = getImageManager().groupDataManager.fetchGroupWithGroupId(groups![indexPath.row])
+        let assetGroup = getGroupDataManager().fetchGroupWithGroupId(groups![indexPath.row])
         cell.groupNameLabel.text = assetGroup.groupName
 		
 		let tag = indexPath.row + 1
@@ -201,7 +201,7 @@ class DKAssetGroupListVC: UITableViewController, DKGroupDataManagerObserver {
 		if assetGroup.totalCount == 0 {
 			cell.thumbnailImageView.image = DKImageResource.emptyAlbumIcon()
 		} else {
-			getImageManager().groupDataManager.fetchGroupThumbnailForGroup(assetGroup.groupId,
+			getGroupDataManager().fetchGroupThumbnailForGroup(assetGroup.groupId,
 				size: CGSize(width: tableView.rowHeight, height: tableView.rowHeight).toPixel(),
 				options: self.groupThumbnailRequestOptions) { image, info in
 				if cell.tag == tag {
